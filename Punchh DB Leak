@@ -1,0 +1,32 @@
+# Punchh Database Leak
+DATE: 07/19/2021
+
+>RISK CATEGORY: LOW
+>CLASSIFICATION: FOUO - FOR OFFICIAL USE ONLY
+>DISTRIBUTION: INTERNAL
+{.is-warning}
+
+Assets: AWS Database
+
+## SITUATION
+On 19 July 2021, while working to configure the data pipe for Tropical Smoothie Café (TSC), Punchh staff triggered a misconfiguration of the system, which is implemented using a commercial data movement tool called Fivetran. Due to the misconfiguration, the tool created an errant database schema in a data sharing database for another customer, and partially populated some of the tables in that new database schema with data from TSC.
+
+On 22 July 2021, while reviewing data access rights in the system, Punchh staff noticed the incorrect configuration, corrected it, deleted the errant data, and began a full investigation. On further analysis, our logs did not show evidence that we made a configuration error, but also did not show evidence that we did not make a configuration error, so we opened a ticket with Fivetran to request that they investigate and provide additional logs. We also continued our own investigation.
+ 
+On 26 July 2021 Punchh staff performed a follow-up access audit and noticed that the incorrect configuration had returned. Punchh staff corrected the error, moved to again remove the errant data, and later confirmed that the data had been successfully deleted.
+ 
+On 27 July 2021 we received the report from Fivetran, which did not contain definitive data to determine if the misconfiguration was human error on the part of Punchh or a defect in the Fivetran system or both. Since the available data was inconclusive, we implemented a freeze on all changes to the Fivetran system and performed another access audit, which showed no configuration errors.
+
+## RESPONSE
+
+Our investigation determined that the cause of the configuration error may have been human error on the part of Punchh, a defect in Fivetran, or a combination of the two. Our DBA organization follows a checklist when manually configuring data streams. The checklist includes a list of steps to be completed, and one of those steps is designed to catch this specific type of misconfiguration. However, since the process is manual, it is subject to human error. 
+ 
+Since we were unable to determine a definitive root cause, we have frozen all changes to our Fivetran configuration.  We are now in the process of re-architecting our entire data pipe feature to minimize the risk that this error or similar errors will occur again by: a) automating the configuration process; b) further segregating access; and c) building more automated tools, including additional automated monitoring and alerting. The automated monitoring/alerting tools are already in development and will be included in the updated version. The updated data pipe feature is planned to be deployed in 2-4 calendar weeks, after which we will remove the Fivetran freeze.
+
+At no time did the configuration error result in any of TSCs data being intermingled with the other customer's data in their database schema. The net effect of the error was the temporary presence of an additional, separate database schema in the other customer's database, containing partial data from TSC. Punchh has confirmed that the errant data has been deleted.
+
+Two documents generated from the ticketing system:
+[rca__racetrac_data_pipeline_-_incorrect_data-v10-20210830_192003.pdf](/punch_db_leak/rca__racetrac_data_pipeline_-_incorrect_data-v10-20210830_192003.pdf)
+[rca__focus_brands_data_pipeline_-_incorrect_data-v24-20210830_192019.pdf](/punch_db_leak/rca__focus_brands_data_pipeline_-_incorrect_data-v24-20210830_192019.pdf)
+
+## TTPs

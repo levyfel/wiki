@@ -1,0 +1,50 @@
+# Kaseya Ransomware IRR
+DATE: 07/06/2021
+
+>RISK CATEGORY: CRITICAL
+>CLASSIFICATION: FOUO - FOR OFFICIAL USE ONLY
+>DISTRIBUTION: INTERNAL // PAR PARTNERS // DO NOT DISCLOSE WITHOUT PROPER APPROVAL
+{.is-danger}
+
+Assets: KASEYAVSA01, KASEYAVSA02, KASEYAVSA03, KASEYAVSATEST
+
+## SITUATION
+On 02JULY2021 Kaseya representatives contacted us regarding the on premise VSA servers. These servers are responsible for allowing remote support to the customers. At this time Kaseya did not specify what kind of attack was happening but given the information and reaction we knew it was probably ransomware.
+Kaseya recommended all on-prem VSA servers be immediately shut down as the initial change the attack does is lock the admin users out of the server, thus preventing anyone else to stop what is happening as the rest of the encryption is executing.
+
+https://helpdesk.kaseya.com/hc/en-gb/articles/4403440684689
+
+## RESPONSE
+Upon receiving the notice of the attack our IT department immediately shut down the servers to ensure the safety of PAR and our customers. As the situation was developing a communications channel was opened between all the different departments to coordinate information and remediation efforts.
+
+Throughout the following week daily sync meetings were established to review next steps and keep all efforts synchronized. Additionally, our managed services department was working on providing updates to our customers and assuring them that so far, no compromise has been been observed on our systems nor has any of our customers reported that they were compromised. At this time, we were sure that the customers would be safe so long as our systems remained offline. This is due to every terminal agent only communicate to PAR VSA servers and would not be receiving updates from anywhere else.
+
+The consensus was established to wait until Kaseya provided tools to properly patch the systems, and that proper testing of those systems needed to be done, before any services were resumed. This was the reason for the extended downtime past our initial assessment.
+The first set of tools were released on 08JUL2021 which contained a runbook. This runbook contained tools to check all our systems for Indicators of Compromise, which all passed. The book also contained instructions for pre-remediation steps to be executed in an isolated environment to harden the VSA servers. 
+
+On 11JUL2021 Kaseya released the on-prem patches along with updates to the runbook. This patch was also verified by Huntress Labs as successfully remediating their proof-of-concept exploits. It took about 4 hours to update the VSATEST server. Once completed the managed services team ran their tests to evaluate performance of the system. Kaseya continued to release a few updates or clarifications on instructions, but none were significant in its changelog. Moving forward as we were confident the server was performing as expected we opened communications to the terminal agents to receive updates and ran tests to ensure they were not compromised. All servers were restored to original functionality by 14JUL2021, with the one exception being customers who use 3rd party service providers. Some of the changes for security required the VSA GUI Portal to be accessed from the internal network only. Due to the way the VSA technology works it proved quite difficult to figure out a solution which the IT team worked on into the following week.
+
+Kaseya provided complimentary licenses for the FireEye Anti-Virus agent to be installed on the VSA servers. This offered another layer of defense that extends beyond the capabilities of the default AV solution provided by Microsoft.
+
+## ATTACK SUMMARY
+Huntress Labs wrote up a detailed event summary, as well as theories for how the hackers got in and a detailed post of each Kaseya update as they were heavily involved with them during the incident.
+
+https://www.huntress.com/blog/rapid-response-kaseya-vsa-mass-msp-ransomware-incident
+
+A high-level summary is that this attack conducted against Kaseya was a supply chain attack. Benefits of this is that very little work needs to be done to spread the ransomware for the largest profit possible. Essentially all they had to do was get into the mothership, infect the Kaseya agent software, then tell all the nodes connected to their servers to pull this latest update. This continued to their customer VSA servers which then infected all their agents. Due to the software is mainly used by Managed Service Providers the number of infected endpoints can increase exponentially. One great example of this was the Swiss Grocery Chain that had to close all stores when their POS systems were locked down.
+
+Currently it has not be validated how the attackers got into Kaseya’s systems. There was also chatter against the theory that the SaaS offering of VSA was not able to be compromised according to one of Kaseya’s statements. The reason why the SaaS customers was deemed safe is since Kaseya was in direct control of that infrastructure, was able to shut them all down immediately, and then worked on notifying their customers who used the on-prem variant of the VSA product. Time to recovery was about the same for SaaS and on-prem customers.
+
+## TTPs
+
+1. Traditionally these kinds of large attacks are staged to take advantage of American holidays in order to maximize the potentional of mass deployment. This is because around the holidays business are at minimal staff if they are even open at all. 
+
+- Instill the proper processes and procedures for the first phase of an incident response plan. This would help in having definded roles and responsibilities established before an incident takes place, which will increase efficency and minimize damage. This incident taught us that different systems or attacks could involve other departments of the company and it was difficult coordinating and synchronizing remote departments.
+
+2. Internal communications is key in keeping individuals up to speed. This includes those that are not directly involved with the incident that is happening. The reasoning for this is not only do you want all the employees to be up to date, but also this was a highly publicied event in the media. Our customers were calling the support department and asking what is happening, how long remote care will be down, are then in danger? Both internal and external communications need to be established as soon as possible, and maintain regular updates even if the situation hasn't progressed. Another area involved on this subject was with malicious individuals maximizing on the opportunity to profit. We had customers saying that other vendors, both legit, and not legit, were contacting their stores or management saying they had a fix for the virus, or used it as a sales pitch.
+
+- Having a communications plan for something like this would streamline the process and also eliminate any disinformation spreading through various channels. We would be able to keep our customers at ease, provide them timely updates, and also protect our customers from futher compromise by providing a single source of information that is trustworthy and official.
+
+3. While we had an initial Incident Reponse Plan with checklists and examples, and even ran though a very high level simulation internally, it did not cover the extent that the Kaseya Ransomware attack created. 
+
+- This was an opportunity to test our plan, and find both sustains and improves. The biggest lesson learned is that the plan needs to cover different scinarios, not by the attack in nature, but who needs to be involved in it. PAR has a lot of branches that opporate autonomously with many different peices that the security team does not have visibility into. The VSA servers being the highlight of the incident. We need to gain better visibility to create a common operating picture. With that the response plans also need to consider the different departments and SMEs in those departments. Some incidents we can handle ourselves. Others we would need assistance as they control the systems and monitor its performance and flaws. By establishing those contacts and working them into the plan we will be much more successful in the Discovery phase of the IR Plan and already communicating with the appropriate individuals.
